@@ -235,6 +235,7 @@ class TorchGeneratorModel(nn.Module, ABC):
         self.longest_label = max(self.longest_label, ys.size(1))
 
         # use cached encoding if available
+        # LISA
         encoder_states = prev_enc if prev_enc is not None else self.encoder(*xs)
 
         # use teacher forcing
@@ -527,8 +528,10 @@ class TorchGeneratorAgent(TorchAgent, ABC):
 
         This is intentionally overridable so that richer models can pass the
         additional inputs.
+
         """
-        return (batch.text_vec,)
+        # LISA
+        return (batch.text_vec, batch.text0_vec)
 
     def _encoder_input(self, batch):
         """
@@ -564,6 +567,7 @@ class TorchGeneratorAgent(TorchAgent, ABC):
         notnull = batch.label_vec.ne(self.NULL_IDX)
         target_tokens = notnull.long().sum(dim=-1)
         correct = ((batch.label_vec == preds) * notnull).sum(dim=-1)
+        # LISA
 
         self.record_local_metric('loss', AverageMetric.many(loss, target_tokens))
         self.record_local_metric('ppl', PPLMetric.many(loss, target_tokens))

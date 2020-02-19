@@ -98,7 +98,9 @@ class Batch(AttrDict):
     def __init__(
         self,
         text_vec=None,
+        text0_vec=None,
         text_lengths=None,
+        text0_lengths=None,
         label_vec=None,
         label_lengths=None,
         labels=None,
@@ -122,6 +124,9 @@ class Batch(AttrDict):
             observations=observations,
             **kwargs,
         )
+
+        self.text0_vec = text0_vec
+        self.text0_lengths = text0_lengths
 
 
 class Output(AttrDict):
@@ -253,6 +258,8 @@ class History(object):
         """
         Update the history with the given observation.
         """
+        # LISA
+
         if self.field in obs and obs[self.field] is not None:
             if self.split_on_newln:
                 next_texts = obs[self.field].split('\n')
@@ -1254,6 +1261,41 @@ class TorchAgent(ABC, Agent):
             obs.force_set('text_vec', torch.LongTensor(truncated_vec))
         return obs
 
+    # LISA
+    def _set_text0_vec(self, obs, add_start, add_end, truncate):
+        """
+        Set the 'labels_vec' field in the observation.
+
+        Useful to override to change vectorization behavior
+        """
+        # convert 'labels' or 'eval_labels' into vectors
+        if 'text0' in obs:
+            label_type = 'text0'
+        elif 'eval_text0' in obs:
+            label_type = 'eval_text0'
+        else:
+            label_type = None
+
+        if label_type is None:
+            return
+
+        elif True:
+            vec_label = self._vectorize_text(obs[label_type], False, False, truncate, False)
+            obs[label_type + '_vec'] = vec_label
+            obs[label_type + '_choice'] = obs[label_type]
+            # check truncation of pre-computed vector
+            # truncated_vec = self._check_truncate(obs[label_type + '_vec'], truncate)
+            # obs.force_set(label_type + '_vec', torch.LongTensor(truncated_vec))
+        else:
+            # pick one label if there are multiple
+            lbls = obs[label_type]
+            label = lbls
+            vec_label = self._vectorize_text(label, add_start, add_end, truncate, False)
+            obs[label_type + '_vec'] = vec_label
+            obs[label_type + '_choice'] = label
+
+        return obs
+
     def _set_label_vec(self, obs, add_start, add_end, truncate):
         """
         Set the 'labels_vec' field in the observation.
@@ -1357,6 +1399,7 @@ class TorchAgent(ABC, Agent):
             'cands_vec' fields added.
         """
         self._set_text_vec(obs, history, text_truncate)
+        self._set_text0_vec(obs, add_start, add_end, label_truncate)
         self._set_label_vec(obs, add_start, add_end, label_truncate)
         self._set_label_cands_vec(obs, add_start, add_end, label_truncate)
         return obs
@@ -1428,14 +1471,27 @@ class TorchAgent(ABC, Agent):
         valid_inds, exs = zip(*valid_obs)
 
         # TEXT
+        # LISA
         xs, x_lens = None, None
         if any(ex.get('text_vec') is not None for ex in exs):
             _xs = [ex.get('text_vec', self.EMPTY) for ex in exs]
+
             xs, x_lens = self._pad_tensor(_xs)
             if sort:
                 sort = False  # now we won't sort on labels
                 xs, x_lens, valid_inds, exs = argsort(
                     x_lens, xs, x_lens, valid_inds, exs, descending=True
+                )
+
+        xs0, x0_lens = None, None
+        if any(ex.get('text0_vec') is not None for ex in exs):
+            _xs0 = [ex.get('text0_vec', self.EMPTY) for ex in exs]
+
+            xs0, x0_lens = self._pad_tensor(_xs0)
+            if sort:
+                sort = False  # now we won't sort on labels
+                xs0, x0_lens, valid_inds, exs = argsort(
+                    x0_lens, xs0, x0_lens, valid_inds, exs, descending=True
                 )
 
         # LABELS
@@ -1469,8 +1525,10 @@ class TorchAgent(ABC, Agent):
             imgs = [ex.get('image', None) for ex in exs]
 
         return Batch(
-            text_vec=xs,
-            text_lengths=x_lens,
+            text_vec=  xs,
+            text0_vec = xs0,
+            text_lengths= x_lens,
+            text0_lengths = x0_lens,
             label_vec=ys,
             label_lengths=y_lens,
             labels=labels,
@@ -1545,6 +1603,8 @@ class TorchAgent(ABC, Agent):
         self.observation = observation
         # update the history using the observation
         self.history.update_history(observation)
+
+        # LISA
         return self.vectorize(
             observation,
             self.history,
@@ -1842,6 +1902,7 @@ class TorchAgent(ABC, Agent):
             self.global_metrics.add('tokens_per_batch', tbp)
 
         if self.is_training:
+            # LISA2
             output = self.train_step(batch)
         else:
             with torch.no_grad():

@@ -831,6 +831,7 @@ class BatchWorld(World):
         """
         Observe corresponding actions in all subworlds.
         """
+        # LISA printed
         batch_observations = []
         for i, w in enumerate(self.worlds):
             agents = w.get_agents()
@@ -853,6 +854,7 @@ class BatchWorld(World):
                     agents[index].self_observe(observation)
             else:
                 observation = agents[index].observe(observation)
+
 
             # TODO: not so sure about this...
             if observation is None:
@@ -893,13 +895,16 @@ class BatchWorld(World):
         # Assumes DialogPartnerWorld, MultiAgentWorld, or MultiWorlds of them.
         num_agents = len(self.world.get_agents())
         batch_observations = self.batch_observations
+        # LISA
 
         if hasattr(self.world, 'parley_init'):
             for w in self.worlds:
                 w.parley_init()
 
+        # LISA
         for agent_idx in range(num_agents):
             # The agent acts.
+
             batch_act = self.batch_act(agent_idx, batch_observations[agent_idx])
             self.acts[agent_idx] = batch_act
             # We possibly execute this action in the world.

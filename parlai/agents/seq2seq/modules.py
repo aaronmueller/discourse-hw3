@@ -285,7 +285,7 @@ class RNNEncoder(nn.Module):
         else:
             self.rnn = shared_rnn
 
-    def forward(self, xs):
+    def forward(self, xs, xs0):
         """
         Encode sequence.
 
@@ -297,6 +297,13 @@ class RNNEncoder(nn.Module):
             the attention mask is a mask of which input values are nonzero.
         """
         bsz = len(xs)
+
+        # LISA
+        print(xs.shape)
+        print(xs0.shape)
+
+        # xs = torch.cat([xs, xs0], dim=1)
+        print(xs.shape)
 
         # embed input tokens
         xs = self.input_dropout(xs)

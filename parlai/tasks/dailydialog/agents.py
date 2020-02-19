@@ -23,7 +23,7 @@ import os
 import json
 from parlai.core.teachers import FixedDialogTeacher
 from .build import build
-
+import pickle
 
 START_ENTRY = {'text': '__SILENCE__', 'emotion': 'no_emotion', 'act': 'no_act'}
 
@@ -51,27 +51,57 @@ class Convai2Teacher(FixedDialogTeacher):
     def num_examples(self):
         return self.num_exs
 
+
     def _setup_data(self, fold):
+        '''
+        {'fold': 'train', 'topic': 'ordinary_life',
+        'dialogue': [{'emotion': 'no_emotion', 'act': 'question', 'text': 'May I help you , sir ?'},
+         {'emotion': 'no_emotion', 'act': 'directive', 'text': 'I want a pair of locus .'},
+          {'emotion': 'no_emotion', 'act': 'commissive', 'text': 'Take a look at the ones on display , please .'},
+          {'emotion': 'no_emotion', 'act': 'directive', 'text': 'I need size 41 .'}]}
+
+
+        :param fold:
+        :return:
+        '''
         self.data = []
-        fpath = os.path.join(self.opt['datapath'], 'dailydialog', fold + '.json')
+        fpath = os.path.join(self.opt['datapath'], 'MovieTriples_Dataset.tar', fold + '.txt')
         with open(fpath) as f:
             for line in f:
-                self.data.append(json.loads(line))
+                a,b,c = line.strip().split('\t')
+                temp_dicta = {'emotion': 'no_emotion', 'act': 'question', 'text':a}
+                temp_dictb = {'emotion': 'no_emotion', 'act': 'question', 'text':b}
+                temp_dictc = {'emotion': 'no_emotion', 'act': 'question', 'text': c}
+                example_dict = {'fold': 'train', 'topic': 'ordinary_life', 'dialogue':[temp_dicta, temp_dictb, temp_dictc]}
+                self.data.append(example_dict)
 
+
+    # def _setup_data2(self, fold):
+    #     self.data = []
+    #     # fpath = os.path.join(self.opt['datapath'], 'MovieTriples_Dataset', fold + '.json')
+    #     fpath = os.path.join(self.opt['datapath'], 'dailydialog', fold + '.json')
+    #     with open(fpath) as f:
+    #         for line in f:
+    #             self.data.append(json.loads(line))
+    #             print(self.data[-1])
+
+    # LISA
     def get(self, episode_idx, entry_idx=0):
         # Sometimes we're speaker 1 and sometimes we're speaker 2
         speaker_id = episode_idx % 2
         full_eps = self.data[episode_idx // 2]
 
-        entries = [START_ENTRY] + full_eps['dialogue']
-        their_turn = entries[speaker_id + 2 * entry_idx]
-        my_turn = entries[1 + speaker_id + 2 * entry_idx]
+        entries = [START_ENTRY] + [START_ENTRY] + full_eps['dialogue']
+        their_turn = entries[speaker_id + 2 * entry_idx + 1]
+        their_turn0 = entries[speaker_id + 2 * entry_idx]
+        my_turn = entries[2 + speaker_id + 2 * entry_idx]
 
         episode_done = 2 * entry_idx + speaker_id + 1 >= len(full_eps['dialogue']) - 1
 
         action = {
             'topic': full_eps['topic'],
             'text': their_turn['text'],
+            'text0': their_turn0['text'],
             'emotion': their_turn['emotion'],
             'act_type': their_turn['act'],
             'labels': [my_turn['text']],
