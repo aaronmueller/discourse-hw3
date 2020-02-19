@@ -31,7 +31,7 @@ class PPLMetric(AverageMetric):
     def value(self):
         return math.exp(super().value())
 
-class HREDBatch(AttrDict):
+class HredBatch(AttrDict):
     """
     Batch is a namedtuple containing data being sent to an agent.
 
@@ -113,7 +113,7 @@ class HREDBatch(AttrDict):
         )
 
 
-class HREDAgent(TorchGeneratorAgent):
+class HredAgent(TorchGeneratorAgent):
     """
     Agent which takes an input sequence and produces an output sequence.
 
@@ -244,7 +244,7 @@ class HREDAgent(TorchGeneratorAgent):
             help='Probability of replacing tokens with UNK in training.',
         )
 
-        super(HREDAgent, cls).add_cmdline_args(argparser)
+        super(HredAgent, cls).add_cmdline_args(argparser)
         return agent
 
     @staticmethod
@@ -264,7 +264,7 @@ class HREDAgent(TorchGeneratorAgent):
         Set up model.
         """
         super().__init__(opt, shared)
-        self.id = 'HRED'
+        self.id = 'Hred'
 
     def build_model(self, states=None):
         """
@@ -428,12 +428,12 @@ class HREDAgent(TorchGeneratorAgent):
         sort = kwargs.get('sort', False)
 
         if len(obs_batch) == 0:
-            return HREDBatch()
+            return HredBatch()
 
         valid_obs = [(i, ex) for i, ex in enumerate(obs_batch) if self.is_valid(ex)]
 
         if len(valid_obs) == 0:
-            return HREDBatch()
+            return HredBatch()
 
         valid_inds, exs = zip(*valid_obs)
 

@@ -333,14 +333,12 @@ class RNNEncoder(nn.Module):
         return encoder_output, _transpose_hidden_state(hidden), attn_mask
 
 
-"""
 class HREDRNNEncoder(nn.Module):
     """
-    # RNN Encoder.
+    RNN Encoder.
+    Maybe we don't need this? All modifications in HRED class
+    (in .model) and in HREDRNNDecoder
     """
-    # Maybe we don't need this? All modifications in HRED class
-    # (in .model) and in HREDRNNDecoder
-
     def __init__(
         self,
         num_features,
@@ -358,7 +356,7 @@ class HREDRNNEncoder(nn.Module):
         sparse=False,
     ):
         """
-        # Initialize recurrent encoder.
+        Initialize recurrent encoder.
         """
         super().__init__()
 
@@ -394,14 +392,14 @@ class HREDRNNEncoder(nn.Module):
 
     def forward(self, xs):
         """
-        #Encode sequence.
-        #
-        #:param xs: (bsz x seqlen) LongTensor of input token indices
-        #
-        #:returns: encoder outputs, hidden state, attention mask
-        #    encoder outputs are the output state at each step of the encoding.
-        #    the hidden state is the final hidden state of the encoder.
-        #    the attention mask is a mask of which input values are nonzero.
+        Encode sequence.
+        
+        :param xs: (bsz x seqlen) LongTensor of input token indices
+        
+        :returns: encoder outputs, hidden state, attention mask
+            encoder outputs are the output state at each step of the encoding.
+            the hidden state is the final hidden state of the encoder.
+            the attention mask is a mask of which input values are nonzero.
         """
         bsz = len(xs)
 
@@ -438,7 +436,6 @@ class HREDRNNEncoder(nn.Module):
                 hidden = hidden.view(-1, self.dirs, bsz, self.hsz).sum(1)
 
         return encoder_output, _transpose_hidden_state(hidden), attn_mask
-"""
 
 
 class RNNDecoder(nn.Module):
