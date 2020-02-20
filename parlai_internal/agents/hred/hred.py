@@ -791,7 +791,7 @@ class HredAgent(TorchGeneratorAgent):
         """
         Evaluate a single batch of examples.
         """
-        print(f"batch for eval step {batch}") 
+        #print(f"batch for eval step {batch}") 
         if batch.text_0_vec is None and batch.image is None:
             return
         if batch.text_0_vec is not None:
