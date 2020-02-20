@@ -947,7 +947,7 @@ class HredAgent(TorchGeneratorAgent):
                 # exit early if possible
                 break
 
-            score, incr_state = model.decoder(decoder_input, encoder_states, context_vector)
+            score, incr_state = model.decoder(decoder_input, encoder_states, context_vector.cuda())
             # only need the final hidden state to make the word prediction
             score = score[:, -1:, :]
             score = model.output(score)

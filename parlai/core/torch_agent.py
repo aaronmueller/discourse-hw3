@@ -1592,7 +1592,7 @@ class TorchAgent(ABC, Agent):
         observation = Message(observation)
 
         # Sanity check everything is in order
-        self._validate_observe_invariants()
+        #self._validate_observe_invariants()
 
         if observation.get('episode_done'):
             self.__expecting_clear_history = True

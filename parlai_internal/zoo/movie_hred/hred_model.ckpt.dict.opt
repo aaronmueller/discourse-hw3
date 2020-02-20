@@ -22,15 +22,15 @@
     "display_examples": false,
     "num_epochs": 10.0,
     "max_train_time": -1,
-    "validation_every_n_secs": -1,
+    "validation_every_n_secs": 3600.0,
     "save_every_n_secs": -1,
-    "save_after_valid": false,
-    "validation_every_n_epochs": -1,
+    "save_after_valid": true,
+    "validation_every_n_epochs": 1.0,
     "validation_max_exs": -1,
     "short_final_eval": false,
     "validation_patience": 10,
-    "validation_metric": "accuracy",
-    "validation_metric_mode": null,
+    "validation_metric": "token_acc_2",
+    "validation_metric_mode": "max",
     "validation_cutoff": 1.0,
     "load_from_checkpoint": false,
     "validation_share_agent": false,
@@ -132,7 +132,13 @@
         "hiddensize": 512,
         "contextsize": 512,
         "num_epochs": 10.0,
-        "model_file": "parlai_internal/zoo/movie_hred/hred_model.ckpt"
+        "model_file": "parlai_internal/zoo/movie_hred/hred_model.ckpt",
+        "numthreads": 1,
+        "validation_every_n_secs": 3600.0,
+        "validation_every_n_epochs": 1.0,
+        "save_after_valid": true,
+        "validation_metric": "token_acc_2",
+        "validation_metric_mode": "max"
     },
-    "starttime": "Feb19_17-07"
+    "starttime": "Feb19_22-29"
 }
