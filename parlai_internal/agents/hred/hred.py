@@ -597,17 +597,20 @@ class HredAgent(TorchGeneratorAgent):
         # observations as vanilla dicts for legacy interop; eventually we
         # want to remove this behavior and demand that teachers return Messages
         #print(f"history is {self.history.history_strings}") 
-        if len(self.history.history_strings) > 0:
-            observation.force_set("text_0", self.history.history_strings[-1])
-        else:
-            observation.force_set("text_0", "__SILENCE__") 
-        print(f"observing {observation}") 
+        #if len(self.history.history_strings) > 0:
+        #    observation.force_set("text_0", self.history.history_strings[-1])
+        #else:
+        #    observation.force_set("text_0", "__SILENCE__") 
+        observation['text_0'] = observation.get('text0')
+        #print(f"observing {observation}") 
         # NEXT 2 LINES ARE DIRTY HACKS
         if 'labels' in observation:
             observation.force_set('labels', observation.get('labels_1'))
         else:
             observation['labels'] = observation.get('labels_1')
-        observation['eval_labels'] = observation.get('eval_labels_1')
+        #observation['eval_labels'] = observation.get('eval_labels_1')
+        if 'eval_labels' not in observation:
+            observation['eval_labels'] = observation.get('eval_labels_1')
         if "text_1" in observation:
             observation.force_set('text',  observation.get('text_1')) 
             observation.force_set('text_1',  observation.get('text_1')) 

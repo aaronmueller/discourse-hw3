@@ -16,9 +16,10 @@ python -u examples/train_model.py \
 	--contextsize 512 \
 	-eps 10 \
 	-mf parlai_internal/zoo/movie_hred/hred_model.ckpt \
+	-vtim 10800 \
 	-nt 1 \
-	-vtim 3600 \
 	-veps 1 \
 	-sval True \
 	-vmt token_acc_2 \
-	-vmm max
+	-vmm max \
+	-ttim 86400
