@@ -498,7 +498,7 @@ class HredAgent(TorchGeneratorAgent):
         if any('image' in ex for ex in exs):
             imgs = [ex.get('image', None) for ex in exs]
 
-        return HREDBatch(
+        return HredBatch(
             text_0_vec=xs_1,
             text_0_lengths=x_1_lens,
             text_1_vec=xs_2,
@@ -602,7 +602,11 @@ class HredAgent(TorchGeneratorAgent):
         else:
             observation.force_set("text_0", "__SILENCE__") 
         print(f"observing {observation}") 
-        observation['labels'] = observation.get('labels_1')
+        # NEXT 2 LINES ARE DIRTY HACKS
+        if 'labels' in observation:
+            observation.force_set('labels', observation.get('labels_1'))
+        else:
+            observation['labels'] = observation.get('labels_1')
         observation['eval_labels'] = observation.get('eval_labels_1')
         if "text_1" in observation:
             observation.force_set('text',  observation.get('text_1')) 
