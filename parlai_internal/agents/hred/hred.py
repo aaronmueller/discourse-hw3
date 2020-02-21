@@ -630,11 +630,12 @@ class HredAgent(TorchGeneratorAgent):
         :param self_message:
             The message corresponding to the output from batch_act.
         """
-        #print(f"self observe {self_message}") 
+        print(f"self observe message {self_message}") 
         use_reply = self.opt.get('use_reply', 'label')
-
+        print(f"self observe use_reply {use_reply}")
+        print(f"self observe opt {self.opt}")
         # quick check everything is in order
-        self._validate_self_observe_invariants()
+        # self._validate_self_observe_invariants()
 
         assert self.observation is not None
         if self.observation['episode_done']:
