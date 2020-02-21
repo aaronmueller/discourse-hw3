@@ -34,14 +34,14 @@ For Alexa integration we used `ngrok`, a free port forwarding service, and `Flas
 
 The integration files are in `alexa_integration`. You can start the Alexa skill server with
 ```
-./start_skill_server
+./start_skill_server.sh
 ```
-This will host the skill on port 2020. And then to forward the port to 443 (the HTTPS port needed for Alexa), start ngrok with 
+This will host the skill on port 2020. And then to forward the port to 443 (the HTTPS port needed for Alexa), start ngrok in another terminal with 
 ```
 ngrok http https://localhost:2020
 ```
 
-And on the Alexa Development Console side, make a new skill with a custom HTTPS endpoint, using the URL assigned by ngrok. And for the JSON Editor, use the setup in `alexa_skill.json`. You can test the skill with the Development Console Test tool.
+And on the Alexa Development Console side, make a new skill with a custom HTTPS endpoint, using the URL assigned by ngrok. For the skill's JSON Editor, use the setup in `alexa_skill.json`. You can test the skill with the Development Console Test tool.
 
 
 This integration can be used with any ParlAI model. Just create a file similar to `hred_model_opt.json` and point to that file in `alexa_server.py`.
