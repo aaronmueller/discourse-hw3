@@ -1,6 +1,7 @@
 Names: Lisa Li, Aaron Mueller, Alexandra DeLucia
 
 Emails: {xli150, amueller, aadelucia}@jhu.edu
+
 -------------------------------------------------------------
 
 # Reproduction Instructions
@@ -10,28 +11,28 @@ Emails: {xli150, amueller, aadelucia}@jhu.edu
 1. Now, we need to preprocess the Movie Triples dataset. 
 Download the Movie Triple Data to ParlAI/data, unzip it and rename the file to MovieTriples_Dataset.tar. Inside the MovieTriple_Dataset file, we also need to rename the triple txt files to {train, valid, test}.txt, respectively. Our code will take care of the rest.
 
-2.  Training: 
+2.  **Training**: 
 We provide training scripts for easy reproduction of our training setup. We roughly follow the hyperparameters presented in the original HRED paper---with a few modifications, given the constraints of the assignment. Note that this script is set up to work on the CLSP grid, and you will most certainly need to make some modifications to make it work for your machine or installation.
-'''
+```
 train.sh
-'''
+```
 It (i) sources a ParlAI-enabled conda environment w/ CUDA-enabled PyTorch, (2) sets the proper environment variables, and (3) calls the training function with all the appropriate hyperparameters. We have also included `train_2.sh`, which is similar to `train.sh` but with some (unstable) multi-threading behaviors. We recommend using `train.sh`. 
 
-3. Evaluation:
+3. **Evaluation**:
 From the ParlAI/ directory, run the following command:
-'''
+```
 python parlai/scripts/eval_model.py -mf parlai_internal/zoo/movie_hred/hred_model.ckpt.checkpoint -m internal:hred -t internal:dailydialog
-'''
+```
 Because we have replaced dailydialog with our MovieTriples dataset in our internal implementations, this will actually evaluate on the validation and test sets of MovieTriples.
 
 
-4. Interactive:
+4. **Interactive**:
 From the ParlAI/ directory, run the following command:
-'''
+```
 python examples/interactive.py -mf parlai_internal/zoo/movie_hred/hred_model.ckpt.checkpoint -m internal:hred
-'''
+```
 
-5. Integrating with Alexa: 
+5. **Integrating with Alexa**: 
 _Alexandra_
 
 
@@ -40,14 +41,14 @@ Similar to other groups, we note that our model has low variance but very high b
 
 The chatbot responds with "robotic legalistic robotic", followed by a long and repetitive series of "nehru" tokens. We tried a variety of inputs, but this seems to be the only response that the bot is capable of producing. It is unclear why it is unable to output more sensible responses, though this does yield plenty of inspiration for different types of evaluation metrics than have previously been proposed.
 
-For example, consider BLEU: it has a brevity penalty and is essentially just a modified form of n-gram precision. With our chatbot's uniformly long response, it will never be subject to the brevity penalty and may sometimes demonstrate very small n-gram overlap in certain specialized domains. Perhaps we could define a new metric that encourages chatbot responses to be similar in length to a reference response, or a metric which discourages repetitive sequences of the same token.
+For example, consider BLEU: it has a brevity penalty and is essentially just a modified form of n-gram precision. With our chatbot's uniformly long response, it will never be subject to the brevity penalty and may sometimes demonstrate very small n-gram overlap in certain specialized domains. This is undesirable, since humans are easily able to tell that the output is degenerate regardless of its length. Perhaps we could define a new metric that encourages chatbot responses to be similar in length to a reference response, or a metric which discourages repetitive sequences of the same token such that outputs are more naturalistic. Or, perhaps we could go a step further and train a language model on similar-domain data, then obtain perplexities on our chatbot's outputs as a rough measure of how naturalistic the output is.
 
-There are a variety of metrics that could be used to qualitatively and automatically judge the performance of a chatbot system based on the flaws of our current system, but ultimately, we do not need any of these to see that it does not produce naturalistic responses.
+There are a variety of metrics that could be used to qualitatively and automatically judge the performance of a chatbot system based on the flaws of our current system, but ultimately, we do not need any of these to see that it does not produce naturalistic responses. This leads to our next section on our model's current issues and ideas for future improvement.
 
 
-# Issues and Potential Improvement
-1. From our qualitative evaluation, our trained model is outputting with little variance -- essentially, it outputs the same sentence despite the various input we tried. 
+# Issues and Potential Improvements
+1. From our qualitative evaluation, our trained model is outputting with little variance -- essentially, it outputs the same sentence despite the various inputs that we tried.
 
-2. Some easy improvement includes training the system for longer time; Carefully tune and search over the hyper-parameters; Initialize the model with some pre-trained language model, and then fine-tune. We could initialize our model with GPT-2 to obtain a language-modeling aware starting point. 
+2. Some easy improvement ideas include training the system for a longer period of time; carefully tuning and searching over the hyperparameters; or initializing the model with some pre-trained language model and then fine-tuning. We could initialize our model with GPT-2 to obtain a language-modeling-aware starting point, which would certainly aid the fluency (even if not the acceptability) of our output.
 
-3. At decoding time, we could use the mutual information objective (A Diversity-Promoting Objective Function for Neural Conversation Models) or the Nucleus sampling techniques (The Curious Case of Neural Text Degeneration) to promote model diversity. 
+3. At decoding time, we could use the mutual information objective (A Diversity-Promoting Objective Function for Neural Conversation Models) or the Nucleus sampling techniques (The Curious Case of Neural Text Degeneration) to promote more diversity in the model's output. This could likely improve on the low-variance but high-bias system we currently have.
