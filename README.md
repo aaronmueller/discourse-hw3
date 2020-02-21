@@ -19,11 +19,8 @@ train.sh
 It (i) sources a ParlAI-enabled conda environment w/ CUDA-enabled PyTorch, (2) sets the proper environment variables, and (3) calls the training function with all the appropriate hyperparameters. We have also included `train_2.sh`, which is similar to `train.sh` but with some (unstable) multi-threading behaviors. We recommend using `train.sh`. 
 
 3. **Evaluation**:
-From the ParlAI/ directory, run the following command:
-```
-python parlai/scripts/eval_model.py -mf parlai_internal/zoo/movie_hred/hred_model.ckpt.checkpoint -m internal:hred -t internal:dailydialog
-```
-Because we have replaced dailydialog with our MovieTriples dataset in our internal implementations, this will actually evaluate on the validation and test sets of MovieTriples.
+In the ParlAI/ directory, we have provided an evaluation script named `ppl_eval.sh`. Run this to replicate our evaluation conditions. It will produce an output file named `s` containing eval information on test.:
+Note that this script evaluates on internal:dailydialog. Because we have replaced dailydialog with our MovieTriples dataset in our internal implementations, this will actually evaluate on the validation and test sets of MovieTriples.
 
 
 4. **Interactive**:
@@ -52,3 +49,7 @@ There are a variety of metrics that could be used to qualitatively and automatic
 2. Some easy improvement ideas include training the system for a longer period of time; carefully tuning and searching over the hyperparameters; or initializing the model with some pre-trained language model and then fine-tuning. We could initialize our model with GPT-2 to obtain a language-modeling-aware starting point, which would certainly aid the fluency (even if not the acceptability) of our output.
 
 3. At decoding time, we could use the mutual information objective (A Diversity-Promoting Objective Function for Neural Conversation Models) or the Nucleus sampling techniques (The Curious Case of Neural Text Degeneration) to promote more diversity in the model's output. This could likely improve on the low-variance but high-bias system we currently have.
+
+
+# Find our Model
+If you want to use our trained models, they are available on the CLSP grid. Look in `/export/b10/amueller/discourse/hw3/discourse-hw3/parlai_internal/zoo/movie_hred/hred_model.ckpt.checkpoint`. We also have other models in this folder from other experiments (though we do not recommend them since the aforementioned path is to our best model).
