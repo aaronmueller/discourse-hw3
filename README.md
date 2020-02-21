@@ -32,7 +32,7 @@ python examples/interactive.py -mf parlai_internal/zoo/movie_hred/hred_model.ckp
 5. **Integrating with Alexa**:
 For Alexa integration we used `ngrok`, a free port forwarding service, and `Flask`, a lightweight python server package, to host a custom HTTPS endpoint for our chatbot. 
 
-You can start the Alexa skill server with
+The integration files are in `alexa_integration`. You can start the Alexa skill server with
 ```
 ./start_skill_server
 ```
