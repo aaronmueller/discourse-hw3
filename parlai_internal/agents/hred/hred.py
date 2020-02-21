@@ -615,8 +615,8 @@ class HredAgent(TorchGeneratorAgent):
             observation.force_set('text',  observation.get('text_1')) 
             observation.force_set('text_1',  observation.get('text_1')) 
         else:
-            observation.force_set('text', observation.get('text') ) 
-            observation.force_set('text_1', observation.get('text') ) 
+            observation['text'] = observation.get('text')
+            observation['text_1'] = observation.get('text')
         return super().observe(observation)
 
     def self_observe(self, self_message: Message) -> None:
@@ -948,9 +948,11 @@ class HredAgent(TorchGeneratorAgent):
         for _ts in range(max_ts):
             if all((b.is_done() for b in beams)):
                 # exit early if possible
-                break
-
-            score, incr_state = model.decoder(decoder_input, encoder_states, context_vector.cuda())
+                break			
+            if self.opt["no_cuda"]:
+            	score, incr_state = model.decoder(decoder_input, encoder_states, context_vector)
+            else:
+            	score, incr_state = model.decoder(decoder_input, encoder_states, context_vector.cuda())
             # only need the final hidden state to make the word prediction
             score = score[:, -1:, :]
             score = model.output(score)
