@@ -307,7 +307,7 @@ class RNNEncoder(nn.Module):
             #xes = pack_padded_sequence(xes, x_lens, batch_first=True)
             xes = pack_padded_sequence(xes, x_lens, batch_first=True, enforce_sorted=False)
             packed = True
-        except ValueError:
+        except (ValueError, RuntimeError):
             # packing failed, don't pack then
             packed = False
 

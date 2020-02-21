@@ -706,6 +706,7 @@ class HredAgent(TorchGeneratorAgent):
     def is_valid(self, obs):
         contains_empties = []
         for i in range(2):
+            #print(i, obs[f'text_vec_{i}'], obs[f'text_vec_{i}'].shape[0])
             contains_empties.append(obs[f'text_vec_{i}'].shape[0] == 0)
         if self.is_training and any(contains_empties):
             warn_once(
@@ -791,7 +792,6 @@ class HredAgent(TorchGeneratorAgent):
         """
         Evaluate a single batch of examples.
         """
-        #print(f"batch for eval step {batch}") 
         if batch.text_0_vec is None and batch.image is None:
             return
         if batch.text_0_vec is not None:
@@ -819,8 +819,6 @@ class HredAgent(TorchGeneratorAgent):
         else:
             maxlen = self.label_truncate or 256
             
-            #beam_preds_scores_0, _ = self._generate(batch, self.beam_size, maxlen, index=0)
-            #preds_0, scores_0 = zip(*beam_preds_scores_0)
 
             beam_preds_scores_1, _ = self._generate(batch, self.beam_size, maxlen, index=1)
             preds_1, scores_1 = zip(*beam_preds_scores_1)
