@@ -41,9 +41,13 @@ This will host the skill on port 2020. And then to forward the port to 443 (the 
 ngrok http https://localhost:2020
 ```
 
+And on the Alexa Development Console side, make a new skill with a custom HTTPS endpoint, using the URL assigned by ngrok. And for the JSON Editor, use the setup in `alexa_skill.json`. You can test the skill with the Development Console Test tool.
+
+
 Relevant Resources:  
 
-* [ngrok](https://ngrok.com/docs) 
+* [ngrok](https://ngrok.com/docs)
+* [flask](https://flask.palletsprojects.com/en/1.1.x/) 
 * [Alexa response / request format information](https://developer.amazon.com/en-US/docs/alexa/custom-skills/request-and-response-json-reference.html)
 
 
