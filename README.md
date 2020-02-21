@@ -62,6 +62,10 @@ For example, consider BLEU: it has a brevity penalty and is essentially just a m
 
 There are a variety of metrics that could be used to qualitatively and automatically judge the performance of a chatbot system based on the flaws of our current system, but ultimately, we do not need any of these to see that it does not produce naturalistic responses. This leads to our next section on our model's current issues and ideas for future improvement.
 
+# Quantitative Evaluations
+Our training perplexity was 205.8 on MovieTriples. Validation perplexity was 378.1, and test perplexity was 462.4. These are likely the most informative metrics, since we can compare these with the HRED paper's relatively low perplexities.
+
+BLEU scores were less informative; they were uniformly low due to the repetitive output. Our validation and test BLEU were less than 0.01, most of which likely comes from punctuation.
 
 # Issues and Potential Improvements
 1. From our qualitative evaluation, our trained model is outputting with little variance -- essentially, it outputs the same sentence despite the various inputs that we tried.
