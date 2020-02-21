@@ -44,6 +44,8 @@ ngrok http https://localhost:2020
 And on the Alexa Development Console side, make a new skill with a custom HTTPS endpoint, using the URL assigned by ngrok. And for the JSON Editor, use the setup in `alexa_skill.json`. You can test the skill with the Development Console Test tool.
 
 
+This integration can be used with any ParlAI model. Just create a file similar to `hred_model_opt.json` and point to that file in `alexa_server.py`.
+
 Relevant Resources:  
 
 * [ngrok](https://ngrok.com/docs)
