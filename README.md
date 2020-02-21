@@ -29,8 +29,22 @@ From the ParlAI/ directory, run the following command:
 python examples/interactive.py -mf parlai_internal/zoo/movie_hred/hred_model.ckpt.checkpoint -m internal:hred
 ```
 
-5. **Integrating with Alexa**: 
-_Alexandra_
+5. **Integrating with Alexa**:
+For Alexa integration we used `ngrok`, a free port forwarding service, and `Flask`, a lightweight python server package, to host a custom HTTPS endpoint for our chatbot. 
+
+You can start the Alexa skill server with
+```
+./start_skill_server
+```
+This will host the skill on port 2020. And then to forward the port to 443 (the HTTPS port needed for Alexa), start ngrok with 
+```
+ngrok http https://localhost:2020
+```
+
+Relevant Resources:  
+
+* [ngrok](https://ngrok.com/docs) 
+* [Alexa response / request format information](https://developer.amazon.com/en-US/docs/alexa/custom-skills/request-and-response-json-reference.html)
 
 
 # Qualitative Evaluations
