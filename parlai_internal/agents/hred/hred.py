@@ -602,7 +602,7 @@ class HredAgent(TorchGeneratorAgent):
         #else:
         #    observation.force_set("text_0", "__SILENCE__") 
         observation['text_0'] = observation.get('text0')
-        #print(f"observing {observation}") 
+        print(f"observing {observation}") 
         # NEXT 2 LINES ARE DIRTY HACKS
         if 'labels' in observation:
             observation.force_set('labels', observation.get('labels_1'))
@@ -617,6 +617,8 @@ class HredAgent(TorchGeneratorAgent):
         else:
             observation['text'] = observation.get('text')
             observation['text_1'] = observation.get('text')
+            # observation.force_set('text', observation.get('text'))
+            # observation.force_set('text_1', observation.get('text'))
         return super().observe(observation)
 
     def self_observe(self, self_message: Message) -> None:
@@ -630,6 +632,7 @@ class HredAgent(TorchGeneratorAgent):
         :param self_message:
             The message corresponding to the output from batch_act.
         """
+        return
         print(f"self observe message {self_message}") 
         use_reply = self.opt.get('use_reply', 'label')
         print(f"self observe use_reply {use_reply}")

@@ -64,6 +64,12 @@ def interactive(opt, print_parser=None):
     if isinstance(opt, ParlaiParser):
         print('[ Deprecated Warning: interactive should be passed opt not Parser ]')
         opt = opt.parse_args()
+	
+    # dump opt
+    import json
+    with open("/Users/alexandradelucia/alexa_hello_world/test.json", "w+") as f:
+        print(opt)
+        json.dump(opt, f)	
 
     # Create model and assign it to the specified task
     agent = create_agent(opt, requireModelExists=True)
