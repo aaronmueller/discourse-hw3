@@ -952,11 +952,11 @@ class HredAgent(TorchGeneratorAgent):
         for _ts in range(max_ts):
             if all((b.is_done() for b in beams)):
                 # exit early if possible
-                break			
-            if self.opt["no_cuda"]:
-            	score, incr_state = model.decoder(decoder_input, encoder_states, context_vector)
-            else:
-            	score, incr_state = model.decoder(decoder_input, encoder_states, context_vector.cuda())
+                break	
+
+            score, incr_state = model.decoder(decoder_input, encoder_states, context_vector)
+            # score, incr_state = model.decoder(decoder_input, encoder_states, context_vector.cuda())
+            
             # only need the final hidden state to make the word prediction
             score = score[:, -1:, :]
             score = model.output(score)

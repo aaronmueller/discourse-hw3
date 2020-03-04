@@ -877,7 +877,8 @@ class TorchGeneratorAgent(TorchAgent, ABC):
         encoder_states = model.reorder_encoder_states(encoder_states, inds)
         incr_state = None
 
-        for _ts in range(max_ts):
+        #for _ts in range(max_ts):
+        for _ts in range(12):
             if all((b.is_done() for b in beams)):
                 # exit early if possible
                 break
@@ -1085,6 +1086,11 @@ class TreeSearch(object):
             for hyp_id in range(logprobs.size(0)):
                 logprobs[hyp_id][self.eos] = neginf(logprobs.dtype)
 
+        # HACKED
+        if current_length > 12:
+            self.outputs[-1][0] = self.eos
+            return
+
         if self.scores is None:
             self.scores = torch.zeros(1).type_as(logprobs).to(logprobs.device)
 
@@ -1139,11 +1145,12 @@ class TreeSearch(object):
             if self.eos_top_ts is None:
                 self.eos_top_ts = len(self.outputs) - 1
 
+
     def is_done(self):
         """
         Return whether beam search is complete.
         """
-        return self.eos_top and self.n_best_counter >= self.beam_size
+        return (self.eos_top and self.n_best_counter >= self.beam_size) or (len(self.all_scores)-1 > 10)
 
     def _find_ngrams(self, input_list, n):
         """
